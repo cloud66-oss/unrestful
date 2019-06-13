@@ -13,10 +13,11 @@ Gem::Specification.new do |s|
   s.summary     = "Unrestful is a simple RPC framework for Rails"
   s.description = "Sometimes you need an API but not a RESTful one. You also don't want the whole gRPC or Thrift stack in your Rails app. Unrestful is the answer!"
   s.license     = "Apache-2.0"
-
+  
   s.files = Dir["{app,config,db,lib}/**/*", "APACHE-LICENSE", "Rakefile", "README.md"]
-
+  
   s.add_dependency "rails", "~> 5.2.0"
-
+  s.add_dependency "jwt", "~> 2.2"
+  
   s.add_development_dependency "sqlite3"
 end

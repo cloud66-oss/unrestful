@@ -1,0 +1,41 @@
+# EditorConfig is awesome: http://EditorConfig.org
+# top-most EditorConfig file
+root = true
+
+# all files
+[*]
+# Unix-style newlines
+end_of_line = lf
+# newline ending every file
+insert_final_newline = true
+# utf-8 charset
+charset = utf-8
+# remove and trailing whitespace chars
+trim_trailing_whitespace = true
+# default to tab spacing
+indent_style = space
+# default to 4 char tabs
+indent_size = 2
+# no max line length
+max_line_length = off
+# keep curly on same line if possible
+curly_bracket_next_line = false
+# https://en.wikipedia.org/wiki/Indent_style#K.26R_style
+indent_brace_style = K&R
+# "something + something" not "something+something"
+spaces_around_operators = true
+# "something(true)" not "something ( true )"
+spaces_around_brackets = none
+
+[*.{vue,js,css,scss,html,xml,html.erb}]
+indent_style = space
+indent_size = 4
+
+[*.{yml,yml.liquid,yaml,yaml.liquid,sh,sh.erb}]
+indent_style = space
+indent_size = 2
+spaces_around_operators = false
+
+[*.{rb,rb.erb,rb.static}]
+indent_style = tab
+indent_size = 4
