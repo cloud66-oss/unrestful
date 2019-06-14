@@ -6,7 +6,7 @@ module Unrestful
 		attr_accessor :message
 		attr_accessor :exception 
 		
-		def self.render(message, exc: nil )
+		def self.render(message, exc: nil)
 			obj = Unrestful::FailResponse.new
 			obj.message = message
 			obj.exception = exc unless exc.nil?

@@ -1,11 +1,9 @@
 Dir[File.join(Rails.root, 'app', 'rpc', '*.rb')].each { |file| require file }
+require 'net/http'
+require 'uri'
 
 module Unrestful
 	class EndpointsController < ApplicationController
-		
-		ISSUER = 'https://cloud66.com'
-		LEEWAY = 30
-		AUDIENCE = ['ACME']
 		
         def endpoint 
             method = params[:method]
@@ -20,7 +18,7 @@ module Unrestful
             actor = klass.new
             actor.instance_variable_set(:@model, model)
 			actor.instance_variable_set(:@method, method)
-			actor.instance_variable_set(:@token, token)
+			actor.instance_variable_set(:@request, request)
             
             # only public methods
             raise "#{klass} doesn't have a method called #{method}" unless actor.respond_to? method
@@ -35,15 +33,10 @@ module Unrestful
             fail(exc: exc)
         rescue ::Unrestful::FailError => exc
 			fail(exc: exc)
-		rescue JWT::IncorrectAlgorithm => exc 
-			fail(exc: exc, status: :bad_request, message: 'Bad JWT')
-		rescue JWT::InvalidIssuerError => exc
-			fail(exc: exc, status: :unauthorized, message: 'Invalid issuer')
-		rescue JWT::ExpiredSignature => exc
-			fail(exc: exc, status: :unauthorized, message: 'Token expire')
-		rescue JWT::InvalidAudError => exc 
-			fail(exc: exc, status: :unauthorized, message: 'Invalid audience')
-        rescue => exc
+		rescue ::Unrestful::Error => exc
+			fail(exc: exc)
+		rescue => exc
+			raise exc if Rails.env.development?
             fail(exc: exc, status: :internal_server_error)
         end
         
@@ -58,26 +51,9 @@ module Unrestful
         end
         
 		def fail(exc:, status: :bad_request, message: nil)
-            render json: Unrestful::FailResponse.render(message.nil? ? exc.message : message, exc: exc) , status: status
+			raise ArgumentError if exc.nil? && message.nil? 
+			msg = exc.nil? ? message : exc.message
+            render json: Unrestful::FailResponse.render(msg, exc: exc) , status: status
 		end
-		
-		def token
-			header = request.headers['Authorization']
-			header = header.split(' ').last if header
-
-			return JWT.decode(header, jwt.rsa_public, true, { 
-				iss: ISSUER, 
-				verify_iss: true, 
-				algorithm: 'RS256',
-				exp_leeway: LEEWAY,
-				aud: AUDIENCE, 
-				verify_aud: true,
-			})
-		end
-
-		def jwt 
-			@jwt || Unrestful::Jwt.new
-		end
-        
-    end
+	end
 end
