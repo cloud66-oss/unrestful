@@ -2,7 +2,7 @@
 require 'jwt'
 
 module Unrestful
-	module Secured
+	module JwtSecured
 		extend ActiveSupport::Concern
 	
 		private

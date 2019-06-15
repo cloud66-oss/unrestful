@@ -4,19 +4,22 @@ require 'uri'
 
 module Unrestful
 	class EndpointsController < ApplicationController
+		protect_from_forgery unless: -> { request.format.json? }
+
+		INVALID_PARAMS = [:method, :service, :controller, :action, :endpoint]
 		
         def endpoint 
             method = params[:method]
-            model = params[:model]
-            model_class = model.camelize.singularize
-            
-            arguments = request.query_parameters.symbolize_keys.reject { |x| [:method, :model].include? x }
-            
-            klass = "::Rpc::#{model_class}".constantize
+            service = params[:service]
+            service_class = service.camelize.singularize
+			
+			arguments = params.to_unsafe_h.symbolize_keys.reject { |x| INVALID_PARAMS.include? x }
+
+			klass = "::Rpc::#{service_class}".constantize
             
             raise NameError, "#{klass} is not a Unrestful::RpcController" unless klass <= ::Unrestful::RpcController
             actor = klass.new
-            actor.instance_variable_set(:@model, model)
+            actor.instance_variable_set(:@service, service)
 			actor.instance_variable_set(:@method, method)
 			actor.instance_variable_set(:@request, request)
             

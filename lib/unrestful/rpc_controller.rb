@@ -1,7 +1,7 @@
 module Unrestful
   class RpcController
 
-    attr_reader :model
+    attr_reader :service
 	attr_reader :method
 	attr_reader :request
 
