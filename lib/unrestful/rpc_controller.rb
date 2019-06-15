@@ -4,10 +4,13 @@ module Unrestful
     attr_reader :service
 	attr_reader :method
 	attr_reader :request
+	attr_reader :response
+	attr_reader :live 
 
     class_attribute :before_method_callbacks, default: {}
 	class_attribute :after_method_callbacks, default: {}
 	class_attribute :assigned_scopes, default: {}
+	class_attribute :live_methods, default: []
 
     def before_callbacks
       self.class.before_method_callbacks.each do |k, v|
@@ -20,6 +23,11 @@ module Unrestful
       self.class.after_method_callbacks.each do |k, v|
         self.send(k)
       end
+	end
+
+	def write(message)
+		raise NotLiveError unless live
+		response.stream.write message
 	end
 	
     protected
@@ -34,6 +42,10 @@ module Unrestful
 
 	def self.scopes(scope_list)
 		self.assigned_scopes = scope_list
+	end
+
+	def self.live(live_list)
+		self.live_methods = live_list
 	end
 	
     def fail!(message = "")

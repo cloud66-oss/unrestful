@@ -1,3 +1,3 @@
 Unrestful::Engine.routes.draw do
-	post ':service/:method', controller: :endpoints, action: :endpoint
+	match ':service/:method', controller: :endpoints, action: :endpoint, as: :endpoint, via: [:get, :post]
 end
