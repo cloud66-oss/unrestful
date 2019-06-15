@@ -39,7 +39,6 @@ module Unrestful
 		rescue ::Unrestful::Error => exc
 			fail(exc: exc)
 		rescue => exc
-			raise exc if Rails.env.development?
             fail(exc: exc, status: :internal_server_error)
         end
         

@@ -1,4 +1,5 @@
 require_relative 'response'
+require 'json/add/exception'
 
 module Unrestful
 	class FailResponse < Unrestful::Response
@@ -9,7 +10,7 @@ module Unrestful
 		def self.render(message, exc: nil)
 			obj = Unrestful::FailResponse.new
 			obj.message = message
-			obj.exception = exc unless exc.nil?
+			obj.exception = exc if !exc.nil? && Rails.env.development?
 			obj.ok = false
 			
 			return obj.as_json
@@ -17,7 +18,7 @@ module Unrestful
 		
 		def as_json
 			result = { message: message }
-			result.merge!({ exception: exception }) if Rails.env.development?
+			result.merge!({ exception: exception }) unless exception.nil?
 			super.merge(result)
 		end
 		
