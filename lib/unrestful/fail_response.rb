@@ -5,8 +5,8 @@ module Unrestful
 	class FailResponse < Unrestful::Response
 		
 		attr_accessor :message
-		attr_accessor :exception 
-		
+		attr_accessor :exception
+
 		def self.render(message, exc: nil)
 			obj = Unrestful::FailResponse.new
 			obj.message = message

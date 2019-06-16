@@ -5,12 +5,15 @@ module Unrestful
 	attr_reader :method
 	attr_reader :request
 	attr_reader :response
-	attr_reader :live 
+	attr_reader :live
+	attr_reader :async
+	attr_reader :async_job_id
 
     class_attribute :before_method_callbacks, default: {}
 	class_attribute :after_method_callbacks, default: {}
 	class_attribute :assigned_scopes, default: {}
 	class_attribute :live_methods, default: []
+	class_attribute :async_methods, default: []
 
     def before_callbacks
       self.class.before_method_callbacks.each do |k, v|
@@ -27,7 +30,7 @@ module Unrestful
 
 	def write(message)
 		raise NotLiveError unless live
-		response.stream.write message
+		response.stream.write "#{message}\n"
 	end
 	
     protected
@@ -46,6 +49,10 @@ module Unrestful
 
 	def self.live(live_list)
 		self.live_methods = live_list
+	end
+
+	def self.async(async_list)
+		self.async_methods = async_list
 	end
 	
     def fail!(message = "")

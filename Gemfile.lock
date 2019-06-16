@@ -4,6 +4,7 @@ PATH
     unrestful (0.1.0)
       jwt (~> 2.2)
       rails (~> 5.2.0)
+      redis (~> 4.1)
 
 GEM
   remote: https://rubygems.org/
@@ -104,6 +105,7 @@ GEM
       rake (>= 0.8.7)
       thor (>= 0.19.0, < 2.0)
     rake (12.3.2)
+    redis (4.1.2)
     sprockets (3.7.2)
       concurrent-ruby (~> 1.0)
       rack (> 1, < 3)

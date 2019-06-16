@@ -6,8 +6,10 @@ module Rpc
 		scopes({
 			'switch_owner' => ['write:account'],
 			'migrate' => ['read:account'],
+			'long_one' => ['read:account']
 		})
 		live(['migrate'])
+		async(['long_one'])
 
 		before_method :authenticate_request!
 		#after_method :do_something
@@ -27,6 +29,10 @@ module Rpc
 			}
 
 			return nil 
+		end
+
+		def long_one
+			return { not_done_yet: true }
 		end
 		
 	end
