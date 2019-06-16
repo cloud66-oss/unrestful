@@ -75,10 +75,10 @@ module Unrestful
 			fail(exc: exc)
 		rescue ::Unrestful::Error => exc
 			fail(exc: exc)
-		rescue => exc
-			fail(exc: exc, status: :internal_server_error)
 		rescue IOError
 			# ignore as this could be the client disconnecting during streaming
+		rescue => exc
+			fail(exc: exc, status: :internal_server_error)
 		ensure 
 			response.stream.close if live
         end
