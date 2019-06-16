@@ -7,11 +7,11 @@ Unrestful is a lightweight simple RPC framework for Rails that can sit next to y
 - Simple procedure calls over HTTP
 - Streaming
 - Async jobs and async job log streaming and status tracking
-- In development environments, Unrestful requires a multi-threaded web server like Puma. (it won't work with Webrick).
 
 ## Dependencies
 
 Unrestful requires Rails 5.2 (can work with earlier versions) and Redis.
+In development environments, Unrestful requires a multi-threaded web server like Puma. (it won't work with Webrick).
 
 ## Usage
 
