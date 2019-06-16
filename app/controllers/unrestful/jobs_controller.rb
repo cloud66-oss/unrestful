@@ -22,7 +22,8 @@ module Unrestful
 					on.message do |chn, message|
 						# we need to add a newline at the end or
 						# it will get stuck in the buffer
-						response.stream.write "#{message}\n"
+						msg = message.end_with?("\n") ? message : "#{message}\n"
+						response.stream.write msg
 					end
 				end
 			end

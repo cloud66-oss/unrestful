@@ -67,6 +67,12 @@ module Unrestful
 			redis.subscribe_with_timeout(timeout, job_channel, &block)
 		end
 
+		def publish(message)
+			raise AsyncError, "job #{job_key} doesn't exist" unless valid?
+
+			redis.publish(message)
+		end
+
 		def valid?
 			redis.exists(job_key)
 		end

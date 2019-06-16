@@ -44,6 +44,7 @@ module Unrestful
 				@job = AsyncJob.new
 				response.headers['X-Async-JobID'] = @job.job_id
 				@job.update(AsyncJob::ALLOCATED)
+				actor.instance_variable_set(:@job, @job)
 			end
 
 			response.headers['Content-Type'] = 'text/event-stream' if live

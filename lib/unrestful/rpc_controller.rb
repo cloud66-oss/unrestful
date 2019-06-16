@@ -7,7 +7,7 @@ module Unrestful
 	attr_reader :response
 	attr_reader :live
 	attr_reader :async
-	attr_reader :async_job_id
+	attr_reader :job
 
     class_attribute :before_method_callbacks, default: {}
 	class_attribute :after_method_callbacks, default: {}
@@ -30,7 +30,8 @@ module Unrestful
 
 	def write(message)
 		raise NotLiveError unless live
-		response.stream.write "#{message}\n"
+		msg = message.end_with?("\n") ? message : "#{message}\n"
+		response.stream.write msg
 	end
 	
     protected
