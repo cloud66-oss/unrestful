@@ -11,7 +11,7 @@ module Unrestful
 
 		KEY_TIMEOUT = 3600
 		KEY_LENGTH = 10
-		CHANNEL_TIMEOUT = 30
+		CHANNEL_TIMEOUT = 10
 
 		attr_reader :job_id
 
@@ -70,7 +70,7 @@ module Unrestful
 		def publish(message)
 			raise AsyncError, "job #{job_key} doesn't exist" unless valid?
 
-			redis.publish(message)
+			redis.publish(job_channel, message)
 		end
 
 		def valid?
@@ -79,6 +79,8 @@ module Unrestful
 
 		def unsubscribe
 			redis.unsubscribe(job_channel)
+		rescue 
+			# ignore unsub errors
 		end
 
 		def redis
@@ -86,6 +88,11 @@ module Unrestful
 			@redis ||= Redis.new
 		end
 
+		def close
+			redis.unsubscribe(job_channel) if redis.subscribed?
+		ensure 
+			@redis.quit
+		end
 
 		private
 

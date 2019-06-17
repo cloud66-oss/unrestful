@@ -1,6 +1,10 @@
+require_relative '../../../lib/unrestful/utils'
+
 module Unrestful
 	class JobsController < ApplicationController
 		include ActionController::Live
+		include Unrestful::Utils
+
 		# TODO: JWT check
 
 		def status
@@ -14,10 +18,15 @@ module Unrestful
 			job = AsyncJob.new(job_id: params[:job_id])
 			response.headers['Content-Type'] = 'text/event-stream'
 
-			trap(:INT) { raise StreamInterrupted }
+			# this might be messy but will breakout of redis subscriptions when 
+			# the app needs to be shutdown
+			trap(:INT) { raise StreamInterrupted } 
 
-			ticker = Thread.new { job.redis.publish("heartbeat","thump"); sleep 5 }
-			sender = Thread.new do
+			# this is to keep redis connection alive during long sessions
+			ticker = safe_thread "ticker:#{job.job_id}" do
+				loop { job.redis.publish("unrestful:heartbeat", 1); sleep 5 }
+			end
+			sender = safe_thread "sender:#{job.job_id}" do
 				job.subscribe do |on|
 					on.message do |chn, message|
 						# we need to add a newline at the end or
@@ -35,13 +44,14 @@ module Unrestful
 			render json: Unrestful::FailResponse.render(exc.message, exc: exc) , status: :not_found
 		rescue IOError
 			# ignore as this could be the client disconnecting during streaming
-			job.unsubscribe unless job.nil?
+			job.unsubscribe if job
 		rescue StreamInterrupted
-			job.unsubscribe unless job.nil?
+			job.unsubscribe if job
 		ensure
 			ticker.kill if ticker
 			sender.kill if sender
 			response.stream.close
+			job.close if job
 		end
 	end
 end
