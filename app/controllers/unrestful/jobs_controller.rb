@@ -1,11 +1,10 @@
-require_relative '../../../lib/unrestful/utils'
-
 module Unrestful
 	class JobsController < ApplicationController
 		include ActionController::Live
 		include Unrestful::Utils
+		include Unrestful::JwtSecured
 
-		# TODO: JWT check
+		before_action :authenticate_request!
 
 		def status
 			job = AsyncJob.new(job_id: params[:job_id])
@@ -52,6 +51,13 @@ module Unrestful
 			sender.kill if sender
 			response.stream.close
 			job.close if job
+		end
+
+		private 
+
+		# overwriting this as scopes don't apply to this controller
+		def scope_included
+			true 
 		end
 	end
 end

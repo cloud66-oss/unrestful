@@ -84,8 +84,7 @@ module Unrestful
 		end
 
 		def redis
-			# TODO: Config
-			@redis ||= Redis.new
+			@redis ||= Redis.new(url: Unrestful.configuration.redis_address)
 		end
 
 		def close

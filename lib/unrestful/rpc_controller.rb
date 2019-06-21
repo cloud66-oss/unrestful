@@ -9,9 +9,9 @@ module Unrestful
 	attr_reader :async
 	attr_reader :job
 
-    class_attribute :before_method_callbacks, default: {}
-	class_attribute :after_method_callbacks, default: {}
-	class_attribute :assigned_scopes, default: {}
+    class_attribute :before_method_callbacks, default: ActiveSupport::HashWithIndifferentAccess.new
+	class_attribute :after_method_callbacks, default: ActiveSupport::HashWithIndifferentAccess.new
+	class_attribute :assigned_scopes, default: ActiveSupport::HashWithIndifferentAccess.new
 	class_attribute :live_methods, default: []
 	class_attribute :async_methods, default: []
 
@@ -45,7 +45,7 @@ module Unrestful
 	end
 
 	def self.scopes(scope_list)
-		self.assigned_scopes = scope_list
+		self.assigned_scopes = ActiveSupport::HashWithIndifferentAccess.new(scope_list)
 	end
 
 	def self.live(live_list)

@@ -4,9 +4,9 @@ module Rpc
 	class Account < ::Unrestful::RpcController
 		include Unrestful::JwtSecured
 		scopes({
-			'switch_owner' => ['write:account'],
-			'migrate' => ['read:account'],
-			'long_one' => ['read:account']
+			switch_owner: ['write:account'],
+			migrate: ['read:account'],
+			long_one: ['read:account']
 		})
 		live(['migrate'])
 		async(['long_one'])
