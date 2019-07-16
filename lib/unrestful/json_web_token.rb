@@ -2,22 +2,20 @@
 require 'net/http'
 require 'uri'
 
-module Unrestful 
+module Unrestful
 	class JsonWebToken
-		ISSUER = 'https://cloud66.eu.auth0.com/'
 		LEEWAY = 30
-		AUDIENCE = ['central.admin.api.v2.development']
 
 		def self.verify(token)
 			JWT.decode(token, nil,
-					true,
-					algorithm: 'RS256',
-					iss: ISSUER,
-					verify_iss: true,
-					aud: AUDIENCE,
-					verify_aud: true) do |header|
-						jwks_hash[header['kid']]
-					end
+					   true,
+					   algorithm: 'RS256',
+					   iss: Unrestful.configuration.issuer,
+					   verify_iss: true,
+					   aud: Unrestful.configuration.audience,
+					   verify_aud: true) do |header|
+				jwks_hash[header['kid']]
+			end
 		end
 
 		def self.jwks_hash
