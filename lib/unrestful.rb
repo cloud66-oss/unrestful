@@ -22,12 +22,24 @@ module Unrestful
 			@options[:issuer] || ENV.fetch("ISSUER")
 		end
 
+		def issuer=(value)
+			@options[:issuer] = value
+		end
+
 		def audience
 			@options[:audience] || ENV.fetch("AUDIENCE")
 		end
 
+		def audience=(value)
+			@options[:audience] = value
+		end
+
 		def redis_address
 			@options[:redis_address] || ENV.fetch("REDIS_URL") {"redis://localhost:6379/1"}
+		end
+
+		def redis_address=(value)
+			@options[:redis_address] = value
 		end
 	end
 end
