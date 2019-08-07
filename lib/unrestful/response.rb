@@ -4,7 +4,7 @@ module Unrestful
     attr_accessor :ok
 
     def as_json
-      { ok: @ok }
+      {ok: @ok}
     end
 
   end
