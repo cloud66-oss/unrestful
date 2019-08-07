@@ -14,7 +14,7 @@ module Unrestful
     end
 
     def as_json
-      super.merge({ payload: payload })
+      super.merge({payload: payload})
     end
   end
 end
